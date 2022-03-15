@@ -2,13 +2,14 @@
  * This program encrypts and decrypts messages by inputting a message
  * and stating the number of rows you'd like the encryption to contain.
  * Author: Paige Wiley
- * Date: 
+ * Date:
  */
 package com.example.cryptographyproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,5 +17,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    public void onRadioButtonClicked(View view){
+
     }
 }
