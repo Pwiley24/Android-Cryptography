@@ -1,14 +1,145 @@
-package com.example.cryptographyproject;
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-import androidx.appcompat.app.AppCompatActivity;
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-import android.os.Bundle;
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/decryptMes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Decrypted Message:"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"/>
+            <EditText
+                android:id="@+id/inputDecrypt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/decryptMes"/>
+        </TableRow>
 
-public class MainActivity extends AppCompatActivity {
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/encryptMes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Encrypted Message:"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"/>
+            <EditText
+                android:id="@+id/inputEncrypt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/encryptMes"/>
+        </TableRow>
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-}
+        <View
+            android:layout_width="1dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"/>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/cipherScy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scytale"
+                    android:textSize="25dp"
+                    android:onClick="onRadioButtonClicked"
+                    android:fontFamily="sans-serif-light"/>
+                <RadioButton
+                    android:id="@+id/cipherCeasar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ceasar"
+                    android:textSize="25dp"
+                    android:onClick="onRadioButtonClicked"
+                    android:fontFamily="sans-serif-light"/>
+                <RadioButton
+                    android:id="@+id/cipherVig"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vigenere"
+                    android:textSize="25dp"
+                    android:onClick="onRadioButtonClicked"
+                    android:fontFamily="sans-serif-light"/>
+            </RadioGroup>
+        </TableRow>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"/>
+        
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/encryptBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Encrypt"
+                android:textSize="25dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="serif-monospace"/>
+            <Button
+                android:id="@+id/decryptBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Decrypt"
+                android:textSize="25dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="serif-monospace"/>
+        </TableRow>
+
+        <!--
+        I used code from stackoverflow.com
+        URL: https://stackoverflow.com/questions/6352140/adding-blank-spaces-to-layout
+        I used this code to add space between two elements in my layout.
+        -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"/>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/outputMes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:text="Message:"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"/>
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
