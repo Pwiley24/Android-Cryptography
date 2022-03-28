@@ -14,14 +14,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-char[] alphabet = new char[26];
-String decryptInput = null;
-String encryptInput = null;
 boolean caesar = false;
 boolean vigenere = false;
 boolean scytale = false;
+TextView shifts;
+TextView encryptMsg;
+TextView decryptMsg;
+TextView output;
+String encryptWord;
+String decryptWord;
 
 
     @Override
@@ -29,12 +34,16 @@ boolean scytale = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        for(int i = 0; i < 26; i++){
-            alphabet[i] = (char)(97 + i);
-        }
 
-        System.out.println(alphabet[0]);
+        shifts = this.findViewById(R.id.inputShifts);
+        encryptMsg = this.findViewById(R.id.inputEncrypt);
+        decryptMsg = this.findViewById(R.id.inputDecrypt);
 
+        //convert textview messages into strings
+        encryptWord = encryptMsg.getText().toString();
+        decryptWord = decryptMsg.getText().toString();
+
+        output = this.findViewById(R.id.outputMes);
 
 
     }
@@ -45,14 +54,33 @@ boolean scytale = false;
     //When a radio button is clicked
     public void onRadioButtonClicked(View view){
 
+        /*
+         * I used code from the Android developers api
+         * URL: https://developer.android.com/guide/topics/ui/controls/radiobutton
+         * I used this code to check which radio button was clicked.
+         */
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()){
+            case R.id.cipherCaesar:
+                if(checked)
+                    caesar = true;
+                break;
+            case R.id.cipherScy:
+                if(checked)
+                    scytale = true;
+                break;
+            case R.id.cipherVig:
+                if(checked)
+                    vigenere = true;
+                break;
+        }
     }
 
     //When encrypt/decrypt buttons are pushed
     public void onClick(View view) {
        Button btn = (Button)view;
 
-       //create char arrays from input
-        createCharArrays();
 
         //encrypt the encrypt message
        if(btn.getText().equals("Encrypt")){
@@ -76,36 +104,45 @@ boolean scytale = false;
     }
 
     public void encryptCaesar(){
-        
+       System.out.println("Caesar encrypt");
         /*
-         *I used code from developer.android.com
-         * URL: https://developer.android.com/guide/topics/ui/dialogs
-         * I used this code to create a pop up that prompts user to input a numerical value.
-         
-        AlertDialog.Builder alertShiftNum = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        alertShiftNum.setView(inflater.inflate(R.layout.input_dialog, null))
-        alertShiftNum.setMessage("How much would you like to shift your message?");
-        alertShiftNum.setCancelable(false);
-        alertShiftNum.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //if done is clicked use the number
-                int shift = (int)this.findViewById(R.id.userInput);
-                if()
+         *I used code from stackoverflow.com
+         * URL: https://stackoverflow.com/questions/15037465/converting-edittext-to-int-android
+         * I used this code to convert an edit text widget into an integer for the number of shifts in the ciphers.
+         */
+        String strgHeight = shifts.getText().toString();
+        int height = Integer.parseInt(strgHeight);
+
+
+
+        int width = encryptWord.length() % height + 1;
+        char[][] caesarArray = new char[height][width];
+
+        for (int y = 0; y < height - encryptWord.length()%height; y++){ //for each row
+            for(int x = 0; x < width; x++) {
+                caesarArray[y][x] = encryptWord.charAt(x + 2*y);
             }
-        });
-
+        }
+        for(int y = height - encryptWord.length()%height; y < height; y++){
+            for(int x = 0; x < width; x++){
+                if(x != width - 1) {
+                    caesarArray[y][x] = encryptWord.charAt(x + 2 * y);
+                }else{
+                    caesarArray[y][x] = '@';
+                }
+            }
+        }
+        String outputMsg = null;
+        for(int x = 0; x < 0; x++){//through each column
+            for(int y = 0; y < 0; y++){//through each row
+                outputMsg += caesarArray[y][x];
+            }
+            output.setText(outputMsg);
+            System.out.println(outputMsg);
+        }
 
     }
 
-    public void createCharArrays(){
-        decryptInput = this.findViewById(R.id.inputDecrypt).toString();
-        encryptInput = this.findViewById(R.id.inputEncrypt).toString();
 
-        decryptInput.toCharArray();
-        encryptInput.toCharArray();
-        System.out.println("hi"+decryptInput);
-    */
-    }
          //create more text fields in the main layout and hide them from view. Once encrypt or decrypt button is clicked, make visible
 }
