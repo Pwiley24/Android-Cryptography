@@ -70,10 +70,10 @@
                     android:onClick="onRadioButtonClicked"
                     android:fontFamily="sans-serif-light"/>
                 <RadioButton
-                    android:id="@+id/cipherCeasar"
+                    android:id="@+id/cipherCaesar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ceasar"
+                    android:text="Caesar"
                     android:textSize="25dp"
                     android:onClick="onRadioButtonClicked"
                     android:fontFamily="sans-serif-light"/>
@@ -91,10 +91,34 @@
         <View
             android:layout_width="1dp"
             android:layout_height="25dp"
-            android:layout_weight="1"/>
-        
+            android:layout_weight="0.5"/>
+
         <TableRow
             android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+            android:id="@+id/shiftNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shifts:"
+            android:textSize="2dp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"/>
+            <EditText
+                android:id="@+id/inputShifts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/shiftNum"/>
+        </TableRow>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"/>
+
+        <TableRow
+            android:id="@+id/tableRow5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
@@ -126,7 +150,7 @@
             android:layout_weight="1"/>
 
         <TableRow
-            android:id="@+id/tableRow5"
+            android:id="@+id/tableRow6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
