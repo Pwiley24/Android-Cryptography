@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -22,11 +23,13 @@ boolean caesar = false;
 boolean vigenere = false;
 boolean scytale = false;
 TextView shifts;
-TextView encryptMsg;
-TextView decryptMsg;
+EditText encryptMsg;
+EditText decryptMsg;
 TextView output;
 String encryptWord;
 String decryptWord;
+int key;
+String strgkey;
 
 
     @Override
@@ -36,14 +39,17 @@ String decryptWord;
 
 
         shifts = this.findViewById(R.id.inputShifts);
-        encryptMsg = this.findViewById(R.id.inputEncrypt);
-        decryptMsg = this.findViewById(R.id.inputDecrypt);
+        encryptMsg = (EditText)this.findViewById(R.id.inputEncrypt);
+        decryptMsg = (EditText)this.findViewById(R.id.inputDecrypt);
 
-        //convert textview messages into strings
-        encryptWord = encryptMsg.getText().toString();
-        decryptWord = decryptMsg.getText().toString();
+
 
         output = this.findViewById(R.id.outputMes);
+
+        Button encrypt = (Button)this.findViewById(R.id.encryptBtn);
+        Button decrypt = (Button)this.findViewById(R.id.decryptBtn);
+
+
 
 
     }
@@ -81,20 +87,33 @@ String decryptWord;
     public void onClick(View view) {
        Button btn = (Button)view;
 
+        //convert textview messages into strings
+        encryptWord = encryptMsg.getText().toString();
+        decryptWord = decryptMsg.getText().toString();
+
+        /*
+         *I used code from stackoverflow.com
+         * URL: https://stackoverflow.com/questions/15037465/converting-edittext-to-int-android
+         * I used this code to convert an edit text widget into an integer for the number of shifts in the ciphers.
+         */
+        strgkey = shifts.getText().toString();
+        if(strgkey.charAt(0) < 48 && strgkey.charAt(0) > 39) { //if the key is a number shift
+            key = Integer.parseInt(strgkey);
+        }
 
         //encrypt the encrypt message
        if(btn.getText().equals("Encrypt")){
          if(caesar){ //if caesar is picked
             encryptCaesar();
          } else if (vigenere) { //if vigenere is picked
-           // encryptVigenere();
+            encryptVigenere();
          }else if (scytale) { //if scytale is picked
             // encryptScytale();
          }
            //decrypt the decrypt message
        }else if(btn.getText().equals("Decrypt")){
            if(caesar){ //if caesar is picked
-
+                decryptCaesar();
            } else if (vigenere) { //if vigenere is picked
 
            }else if (scytale) { //if scytale is picked
@@ -105,44 +124,126 @@ String decryptWord;
 
     public void encryptCaesar(){
        System.out.println("Caesar encrypt");
-        /*
-         *I used code from stackoverflow.com
-         * URL: https://stackoverflow.com/questions/15037465/converting-edittext-to-int-android
-         * I used this code to convert an edit text widget into an integer for the number of shifts in the ciphers.
-         */
-        String strgHeight = shifts.getText().toString();
-        int height = Integer.parseInt(strgHeight);
+       int[] caesarArray = new int[encryptWord.length()];
+       for(int i = 0; i < encryptWord.length(); i++){
+           if(encryptWord.charAt(i) + key > 122){
+               caesarArray[i] = encryptWord.charAt(i) + key - 26; //returns back to a
+           } else if(encryptWord.charAt(i) == 32){
+               caesarArray[i] = 32;
+           } else {
+               caesarArray[i] = encryptWord.charAt(i) + key;
+           }
+       }
 
+       String outputString = "";
+       char[] caesarChars = new char[encryptWord.length()];
+       for(int i = 0; i < encryptWord.length(); i++){
+           caesarChars[i] = (char)(caesarArray[i]);
+           outputString += caesarChars[i];
+       }
+       output.setText("Message: " + outputString);
 
+    }
 
-        int width = encryptWord.length() % height + 1;
-        char[][] caesarArray = new char[height][width];
-
-        for (int y = 0; y < height - encryptWord.length()%height; y++){ //for each row
-            for(int x = 0; x < width; x++) {
-                caesarArray[y][x] = encryptWord.charAt(x + 2*y);
+    public void decryptCaesar(){
+        int[] caesarArray = new int[decryptWord.length()];
+        for(int i = 0; i < decryptWord.length(); i++){
+            if(decryptWord.charAt(i) - key < 97){
+                caesarArray[i] = decryptWord.charAt(i) - key + 26; //returns back to a
+            } else if(decryptWord.charAt(i) == 32){
+                caesarArray[i] = 32;
+            } else {
+                caesarArray[i] = decryptWord.charAt(i) - key;
             }
         }
-        for(int y = height - encryptWord.length()%height; y < height; y++){
+        String outputString = "";
+        char[] caesarChars = new char[decryptWord.length()];
+        for(int i = 0; i < decryptWord.length(); i++){
+            caesarChars[i] = (char)(caesarArray[i]);
+            outputString += caesarChars[i];
+        }
+        output.setText("Message: " + outputString);
+    }
+
+//key word; shift by position of each letter in alphabet;
+    public void encryptVigenere() {
+        System.out.println("Vigenere");
+        //convert key to string
+        String keyWord = strgkey;
+
+        //create array that contains the message:
+        char[] vigenereWord = encryptWord.toCharArray();
+
+        //create an array that contains the key word
+        char[] keyArray = keyWord.toCharArray();
+
+        char[] keyedMsg = new char[vigenereWord.length];
+
+        System.out.println(vigenereWord.length + " " + keyArray.length + " " + keyWord.length());
+        /*
+         *I used code from javahungry.com
+         *URL: https://javahungry.blogspot.com/2019/12/vigenere-cipher-in-java.html
+         *I used this code to create a multivariable loop
+         */
+        for(int i = 0, j = 0; i < vigenereWord.length; i++, j++){
+            if(j == keyArray.length){
+                j = 0;
+            }
+            keyedMsg[i] = keyArray[j];
+        }
+
+
+        String outputString = "";
+        for(int i = 0; i < encryptWord.length(); i++){
+            outputString += keyedMsg[i];
+        }
+        System.out.println("output " + outputString);
+WORK HERE
+
+
+
+
+        char[] vigenereArray = new char[encryptWord.length()];
+        for(int i = 0; i < encryptWord.length(); i++){
+
+        }
+    }
+
+
+
+
+
+    public void scaytaleCipher(){
+        System.out.println("scaytale");
+
+
+
+
+        int width = encryptWord.length() % key + 1;
+        char[][] scaytaleArray = new char[key][width];
+
+        for (int y = 0; y < key - encryptWord.length()%key; y++){ //for each row
+            for(int x = 0; x < width; x++) {
+                scaytaleArray[y][x] = encryptWord.charAt(x + 2*y);
+            }
+        }
+        for(int y = key - encryptWord.length()%key; y < key; y++){
             for(int x = 0; x < width; x++){
                 if(x != width - 1) {
-                    caesarArray[y][x] = encryptWord.charAt(x + 2 * y);
+                    scaytaleArray[y][x] = encryptWord.charAt(x + 2 * y);
                 }else{
-                    caesarArray[y][x] = '@';
+                    scaytaleArray[y][x] = '@';
                 }
             }
         }
         String outputMsg = null;
         for(int x = 0; x < 0; x++){//through each column
             for(int y = 0; y < 0; y++){//through each row
-                outputMsg += caesarArray[y][x];
+                outputMsg += scaytaleArray[y][x];
             }
             output.setText(outputMsg);
             System.out.println(outputMsg);
         }
 
     }
-
-
-         //create more text fields in the main layout and hide them from view. Once encrypt or decrypt button is clicked, make visible
 }
