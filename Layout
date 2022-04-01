@@ -123,6 +123,7 @@
             android:layout_height="wrap_content">
             <Button
                 android:id="@+id/encryptBtn"
+                android:onClick = "onClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Encrypt"
@@ -131,6 +132,7 @@
                 android:fontFamily="serif-monospace"/>
             <Button
                 android:id="@+id/decryptBtn"
+                android:onClick = "onClick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Decrypt"
