@@ -2,7 +2,7 @@
  * This program encrypts and decrypts messages by inputting a message
  * and stating the number of rows you'd like the encryption to contain.
  * Author: Paige Wiley
- * Date:
+ * Date: 4-8-2022
  */
 package com.example.cryptographyproject;
 
@@ -97,7 +97,7 @@ String strgkey;
          * I used this code to convert an edit text widget into an integer for the number of shifts in the ciphers.
          */
         strgkey = shifts.getText().toString();
-        if(strgkey.charAt(0) < 48 && strgkey.charAt(0) > 39) { //if the key is a number shift
+        if(strgkey.charAt(0) >= 48 && strgkey.charAt(0) <= 57) { //if the key is a number shift
             key = Integer.parseInt(strgkey);
         }
 
@@ -108,16 +108,16 @@ String strgkey;
          } else if (vigenere) { //if vigenere is picked
             encryptVigenere();
          }else if (scytale) { //if scytale is picked
-            // encryptScytale();
+             encryptScytale();
          }
            //decrypt the decrypt message
        }else if(btn.getText().equals("Decrypt")){
            if(caesar){ //if caesar is picked
                 decryptCaesar();
            } else if (vigenere) { //if vigenere is picked
-
+               decryptVigenere();
            }else if (scytale) { //if scytale is picked
-
+               decryptScytale();
            }
        }
     }
@@ -141,7 +141,8 @@ String strgkey;
            caesarChars[i] = (char)(caesarArray[i]);
            outputString += caesarChars[i];
        }
-       output.setText("Message: " + outputString);
+        String upperOutput = outputString.toUpperCase();
+       output.setText("Message: " + upperOutput);
 
     }
 
@@ -162,12 +163,13 @@ String strgkey;
             caesarChars[i] = (char)(caesarArray[i]);
             outputString += caesarChars[i];
         }
-        output.setText("Message: " + outputString);
+        String upperOutput = outputString.toUpperCase();
+        output.setText("Message: " + upperOutput);
     }
 
 //key word; shift by position of each letter in alphabet;
     public void encryptVigenere() {
-        System.out.println("Vigenere");
+        System.out.println("vigenere");
         //convert key to string
         String keyWord = strgkey;
 
@@ -177,13 +179,17 @@ String strgkey;
         //create an array that contains the key word
         char[] keyArray = keyWord.toCharArray();
 
+        //create array that contains the key word
         char[] keyedMsg = new char[vigenereWord.length];
 
-        System.out.println(vigenereWord.length + " " + keyArray.length + " " + keyWord.length());
+        //array that will store the finished encryption
+        char[] vigenereArray = new char[encryptWord.length()];
+
         /*
          *I used code from javahungry.com
          *URL: https://javahungry.blogspot.com/2019/12/vigenere-cipher-in-java.html
-         *I used this code to create a multivariable loop
+         *I used this code to create a multivariable loop.
+         * This loop assigns the key word chars to the original message
          */
         for(int i = 0, j = 0; i < vigenereWord.length; i++, j++){
             if(j == keyArray.length){
@@ -192,58 +198,149 @@ String strgkey;
             keyedMsg[i] = keyArray[j];
         }
 
+        //This loop shifts the message based on the letter it corresponds with in the key word.
+        for(int i = 0; i < keyedMsg.length; i++){
+            if(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97 > 122){
+                vigenereArray[i] = (char)(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97 - 26); //returns back to a
+            } else if((int)(encryptWord.charAt(i)) == 32){
+                vigenereArray[i] = (char)(32);
+            } else {
+                vigenereArray[i] = (char)(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97);
+            }
+        }
 
+        //this section transfers each char from the array and puts it into a string to be printed in the app
         String outputString = "";
         for(int i = 0; i < encryptWord.length(); i++){
-            outputString += keyedMsg[i];
+            outputString += vigenereArray[i];
         }
-        System.out.println("output " + outputString);
-WORK HERE
+        String upperOutput = outputString.toUpperCase();
+        output.setText("Message: " + upperOutput);
 
-
-
-
-        char[] vigenereArray = new char[encryptWord.length()];
-        for(int i = 0; i < encryptWord.length(); i++){
-
-        }
     }
 
 
 
+    public void decryptVigenere(){
+        System.out.println("vigenere decrpt");
+        //convert key to string
+        String keyWord = strgkey;
+
+        //create array that contains the message:
+        char[] vigenereWord = decryptWord.toCharArray();
+
+        //create an array that contains the key word
+        char[] keyArray = keyWord.toCharArray();
+
+        //create array that contains the key word
+        char[] keyedMsg = new char[vigenereWord.length];
+
+        //array that will store the finished encryption
+        char[] vigenereArray = new char[decryptWord.length()];
 
 
-    public void scaytaleCipher(){
-        System.out.println("scaytale");
+         //This loop assigns the key word chars to the original message
+        for(int i = 0, j = 0; i < vigenereWord.length; i++, j++){
+            if(j == keyArray.length){
+                j = 0;
+            }
+            keyedMsg[i] = keyArray[j];
+        }
 
-
-
-
-        int width = encryptWord.length() % key + 1;
-        char[][] scaytaleArray = new char[key][width];
-
-        for (int y = 0; y < key - encryptWord.length()%key; y++){ //for each row
-            for(int x = 0; x < width; x++) {
-                scaytaleArray[y][x] = encryptWord.charAt(x + 2*y);
+        //This loop shifts the message based on the letter it corresponds with in the key word.
+        for(int i = 0; i < keyedMsg.length; i++){
+            if(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97) < 97){
+                vigenereArray[i] = (char)(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97) + 26); //returns back to a
+            } else if((int)(decryptWord.charAt(i)) == 32){
+                vigenereArray[i] = (char)(32);
+            } else {
+                vigenereArray[i] = (char)(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97));
             }
         }
-        for(int y = key - encryptWord.length()%key; y < key; y++){
-            for(int x = 0; x < width; x++){
-                if(x != width - 1) {
-                    scaytaleArray[y][x] = encryptWord.charAt(x + 2 * y);
-                }else{
+
+        //this section transfers each char from the array and puts it into a string to be printed in the app
+        String outputString = "";
+        for(int i = 0; i < decryptWord.length(); i++){
+            outputString += vigenereArray[i];
+        }
+        String upperOutput = outputString.toUpperCase();
+        output.setText("Message: " + upperOutput);
+    }
+
+
+    public void encryptScytale(){
+        System.out.println("scaytale");
+
+        String noSpaceW = encryptWord.replaceAll(" ", "");
+        /*
+         * I used code from vertex-academy.com
+         * URL: https://vertex-academy.com/tutorials/en/rounding-numbers-java/
+         * I used this code to find the width of the multidimensional array that will store the message.
+         */
+        double decimalW = (double)(noSpaceW.length() / (double)(key));
+        System.out.println(decimalW);
+        int width = (int)Math.ceil(decimalW);
+        System.out.println(width);
+        int i = 0;
+        char[][] scaytaleArray = new char[key][width]; //new array with a height of the key
+
+        for(int y = 0; y < key; y++){//goes through height of array
+            for(int x = 0; x < width; x++){//goes through width of array
+                if(i < noSpaceW.length()) {
+                    scaytaleArray[y][x] = noSpaceW.charAt(i);
+                    i++;
+                } else {
                     scaytaleArray[y][x] = '@';
                 }
             }
         }
-        String outputMsg = null;
-        for(int x = 0; x < 0; x++){//through each column
-            for(int y = 0; y < 0; y++){//through each row
-                outputMsg += scaytaleArray[y][x];
+
+        String outputString = "";
+        for(int x = 0; x < width; x++){//through each column
+            for(int y = 0; y < key; y++){//through each row
+                outputString += scaytaleArray[y][x];
             }
-            output.setText(outputMsg);
-            System.out.println(outputMsg);
+            String upperOutput = outputString.toUpperCase();
+            //output.setText(outputString);
+            output.setText("message: " + upperOutput);
         }
 
+    }
+
+    public void decryptScytale() {
+        System.out.println("scaytale");
+
+        /*
+         * I used code from vertex-academy.com
+         * URL: https://vertex-academy.com/tutorials/en/rounding-numbers-java/
+         * I used this code to find the width of the multidimensional array that will store the message.
+         */
+        double decimalW = (double)(decryptWord.length() / (double)(key));
+        System.out.println(decimalW);
+        int width = (int)Math.ceil(decimalW);
+        System.out.println(width);
+        int i = 0;
+        char[][] scaytaleArray = new char[key][width]; //new array with a height of the key
+
+        for(int x = 0; x < width; x++){//goes through width of array
+            for(int y = 0; y < key; y++){//goes through height of array
+                if(i < decryptWord.length()) {
+                    scaytaleArray[y][x] = decryptWord.charAt(i);
+                    i++;
+                } else {
+                    scaytaleArray[y][x] = '@';
+                }
+            }
+        }
+
+        String outputString = "";
+        for(int y = 0; y < key; y++){//through each row
+            for(int x = 0; x < width; x++){//through each column
+                outputString += scaytaleArray[y][x];
+            }
+            String upperOutput = outputString.toUpperCase();
+            //output.setText(outputString);
+            output.setText("message: " + upperOutput);
+        }
     }
 }
