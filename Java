@@ -283,14 +283,21 @@ String strgkey;
         System.out.println(width);
         int i = 0;
         char[][] scaytaleArray = new char[key][width]; //new array with a height of the key
+        
+        //establish the extra character positions:
+        int extraChars = noSpaceW.length() - (noSpaceW.length() % key);
+        
+        for(int i = key; i <= extraChars; i--){
+            if(extraChars > 0){
+                scaytaleArray[i][width] = '@'; 
+            }
+        }
 
         for(int y = 0; y < key; y++){//goes through height of array
             for(int x = 0; x < width; x++){//goes through width of array
-                if(i < noSpaceW.length()) {
+                if(i < noSpaceW.length() && scaytaleArray[y][x] != '@') {
                     scaytaleArray[y][x] = noSpaceW.charAt(i);
                     i++;
-                } else {
-                    scaytaleArray[y][x] = '@';
                 }
             }
         }
