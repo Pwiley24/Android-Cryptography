@@ -1,10 +1,17 @@
 /*
  * This program encrypts and decrypts messages by inputting a message
  * and stating the number of rows you'd like the encryption to contain.
+ * Type the word you would like to encrypt or decrypt in the input text field.
+ * Select the type of cipher you would like to apply to your message.
+ * Input the key (a number for caesar or scytale cipher and a word for vigenere).
+ * Select the encrypt or decrypt button and view the new message below.
+ * If you choose to click the other button (such as if you first choose encrypt and now
+ * want to decrypt), the program will decrypt or encrypt the input from the message
+ * below not any new message you input in the text field at the top.
  * Author: Paige Wiley
  * Date: 4-8-2022
  */
-package com.example.cryptographyproject;
+package com.example.cryptography;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,17 +26,15 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-boolean caesar = false;
-boolean vigenere = false;
-boolean scytale = false;
-TextView shifts;
-EditText encryptMsg;
-EditText decryptMsg;
-TextView output;
-String encryptWord;
-String decryptWord;
-int key;
-String strgkey;
+    boolean caesar = false;
+    boolean vigenere = false;
+    boolean scytale = false;
+    TextView shifts;
+    EditText Msg;
+    TextView output;
+    String message;
+    int key;
+    String strgkey;
 
 
     @Override
@@ -39,8 +44,7 @@ String strgkey;
 
 
         shifts = this.findViewById(R.id.inputShifts);
-        encryptMsg = (EditText)this.findViewById(R.id.inputEncrypt);
-        decryptMsg = (EditText)this.findViewById(R.id.inputDecrypt);
+        Msg = (EditText)this.findViewById(R.id.inputMes);
 
 
 
@@ -85,11 +89,10 @@ String strgkey;
 
     //When encrypt/decrypt buttons are pushed
     public void onClick(View view) {
-       Button btn = (Button)view;
+        Button btn = (Button)view;
 
         //convert textview messages into strings
-        encryptWord = encryptMsg.getText().toString();
-        decryptWord = decryptMsg.getText().toString();
+        message = Msg.getText().toString();
 
         /*
          *I used code from stackoverflow.com
@@ -102,64 +105,81 @@ String strgkey;
         }
 
         //encrypt the encrypt message
-       if(btn.getText().equals("Encrypt")){
-         if(caesar){ //if caesar is picked
-            encryptCaesar();
-         } else if (vigenere) { //if vigenere is picked
-            encryptVigenere();
-         }else if (scytale) { //if scytale is picked
-             encryptScytale();
-         }
-           //decrypt the decrypt message
-       }else if(btn.getText().equals("Decrypt")){
-           if(caesar){ //if caesar is picked
+        if(btn.getText().equals("Encrypt")){
+            if(caesar){ //if caesar is picked
+                encryptCaesar();
+            } else if (vigenere) { //if vigenere is picked
+                encryptVigenere();
+            }else if (scytale) { //if scytale is picked
+                encryptScytale();
+            }
+            //decrypt the decrypt message
+        }else if(btn.getText().equals("Decrypt")){
+            if(caesar){ //if caesar is picked
                 decryptCaesar();
-           } else if (vigenere) { //if vigenere is picked
-               decryptVigenere();
-           }else if (scytale) { //if scytale is picked
-               decryptScytale();
-           }
-       }
+            } else if (vigenere) { //if vigenere is picked
+                decryptVigenere();
+            }else if (scytale) { //if scytale is picked
+                decryptScytale();
+            }
+        }
     }
 
     public void encryptCaesar(){
-       System.out.println("Caesar encrypt");
-       int[] caesarArray = new int[encryptWord.length()];
-       for(int i = 0; i < encryptWord.length(); i++){
-           if(encryptWord.charAt(i) + key > 122){
-               caesarArray[i] = encryptWord.charAt(i) + key - 26; //returns back to a
-           } else if(encryptWord.charAt(i) == 32){
-               caesarArray[i] = 32;
-           } else {
-               caesarArray[i] = encryptWord.charAt(i) + key;
-           }
-       }
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
 
-       String outputString = "";
-       char[] caesarChars = new char[encryptWord.length()];
-       for(int i = 0; i < encryptWord.length(); i++){
-           caesarChars[i] = (char)(caesarArray[i]);
-           outputString += caesarChars[i];
-       }
+        int[] caesarArray = new int[noSpaceW.length()];
+        for(int i = 0; i < noSpaceW.length(); i++){
+            if(noSpaceW.charAt(i) + key > 122){
+                caesarArray[i] = noSpaceW.charAt(i) + key - 26; //returns back to a
+            } else {
+                caesarArray[i] = noSpaceW.charAt(i) + key;
+            }
+        }
+
+        String outputString = "";
+        char[] caesarChars = new char[noSpaceW.length()];
+        for(int i = 0; i < noSpaceW.length(); i++){
+            caesarChars[i] = (char)(caesarArray[i]);
+            outputString += caesarChars[i];
+        }
         String upperOutput = outputString.toUpperCase();
-       output.setText("Message: " + upperOutput);
+        output.setText("Message: " + upperOutput);
 
     }
 
     public void decryptCaesar(){
-        int[] caesarArray = new int[decryptWord.length()];
-        for(int i = 0; i < decryptWord.length(); i++){
-            if(decryptWord.charAt(i) - key < 97){
-                caesarArray[i] = decryptWord.charAt(i) - key + 26; //returns back to a
-            } else if(decryptWord.charAt(i) == 32){
-                caesarArray[i] = 32;
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
+        System.out.println("char " + noSpaceW.charAt(1));
+        int[] caesarArray = new int[noSpaceW.length()];
+        for(int i = 0; i < noSpaceW.length(); i++){
+            if(noSpaceW.charAt(i) - key < 97){
+                caesarArray[i] = noSpaceW.charAt(i) - key + 26; //returns back to a
             } else {
-                caesarArray[i] = decryptWord.charAt(i) - key;
+                caesarArray[i] = noSpaceW.charAt(i) - key;
             }
         }
         String outputString = "";
-        char[] caesarChars = new char[decryptWord.length()];
-        for(int i = 0; i < decryptWord.length(); i++){
+        char[] caesarChars = new char[noSpaceW.length()];
+        for(int i = 0; i < noSpaceW.length(); i++){
             caesarChars[i] = (char)(caesarArray[i]);
             outputString += caesarChars[i];
         }
@@ -167,14 +187,24 @@ String strgkey;
         output.setText("Message: " + upperOutput);
     }
 
-//key word; shift by position of each letter in alphabet;
+    //key word; shift by position of each letter in alphabet;
     public void encryptVigenere() {
-        System.out.println("vigenere");
         //convert key to string
         String keyWord = strgkey;
 
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
+
         //create array that contains the message:
-        char[] vigenereWord = encryptWord.toCharArray();
+        char[] vigenereWord = noSpaceW.toCharArray();
 
         //create an array that contains the key word
         char[] keyArray = keyWord.toCharArray();
@@ -183,7 +213,7 @@ String strgkey;
         char[] keyedMsg = new char[vigenereWord.length];
 
         //array that will store the finished encryption
-        char[] vigenereArray = new char[encryptWord.length()];
+        char[] vigenereArray = new char[noSpaceW.length()];
 
         /*
          *I used code from javahungry.com
@@ -200,18 +230,18 @@ String strgkey;
 
         //This loop shifts the message based on the letter it corresponds with in the key word.
         for(int i = 0; i < keyedMsg.length; i++){
-            if(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97 > 122){
-                vigenereArray[i] = (char)(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97 - 26); //returns back to a
-            } else if((int)(encryptWord.charAt(i)) == 32){
+            if(noSpaceW.charAt(i) + (int)(keyedMsg[i]) - 97 > 122){
+                vigenereArray[i] = (char)(noSpaceW.charAt(i) + (int)(keyedMsg[i]) - 97 - 26); //returns back to a
+            } else if((int)(noSpaceW.charAt(i)) == 32){
                 vigenereArray[i] = (char)(32);
             } else {
-                vigenereArray[i] = (char)(encryptWord.charAt(i) + (int)(keyedMsg[i]) - 97);
+                vigenereArray[i] = (char)(noSpaceW.charAt(i) + (int)(keyedMsg[i]) - 97);
             }
         }
 
         //this section transfers each char from the array and puts it into a string to be printed in the app
         String outputString = "";
-        for(int i = 0; i < encryptWord.length(); i++){
+        for(int i = 0; i < noSpaceW.length(); i++){
             outputString += vigenereArray[i];
         }
         String upperOutput = outputString.toUpperCase();
@@ -222,12 +252,22 @@ String strgkey;
 
 
     public void decryptVigenere(){
-        System.out.println("vigenere decrpt");
         //convert key to string
         String keyWord = strgkey;
 
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
+
         //create array that contains the message:
-        char[] vigenereWord = decryptWord.toCharArray();
+        char[] vigenereWord = noSpaceW.toCharArray();
 
         //create an array that contains the key word
         char[] keyArray = keyWord.toCharArray();
@@ -236,10 +276,10 @@ String strgkey;
         char[] keyedMsg = new char[vigenereWord.length];
 
         //array that will store the finished encryption
-        char[] vigenereArray = new char[decryptWord.length()];
+        char[] vigenereArray = new char[noSpaceW.length()];
 
 
-         //This loop assigns the key word chars to the original message
+        //This loop assigns the key word chars to the original message
         for(int i = 0, j = 0; i < vigenereWord.length; i++, j++){
             if(j == keyArray.length){
                 j = 0;
@@ -249,18 +289,18 @@ String strgkey;
 
         //This loop shifts the message based on the letter it corresponds with in the key word.
         for(int i = 0; i < keyedMsg.length; i++){
-            if(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97) < 97){
-                vigenereArray[i] = (char)(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97) + 26); //returns back to a
-            } else if((int)(decryptWord.charAt(i)) == 32){
+            if(noSpaceW.charAt(i) - ((int)(keyedMsg[i]) - 97) < 97){
+                vigenereArray[i] = (char)(noSpaceW.charAt(i) - ((int)(keyedMsg[i]) - 97) + 26); //returns back to a
+            } else if((int)(noSpaceW.charAt(i)) == 32){
                 vigenereArray[i] = (char)(32);
             } else {
-                vigenereArray[i] = (char)(decryptWord.charAt(i) - ((int)(keyedMsg[i]) - 97));
+                vigenereArray[i] = (char)(noSpaceW.charAt(i) - ((int)(keyedMsg[i]) - 97));
             }
         }
 
         //this section transfers each char from the array and puts it into a string to be printed in the app
         String outputString = "";
-        for(int i = 0; i < decryptWord.length(); i++){
+        for(int i = 0; i < noSpaceW.length(); i++){
             outputString += vigenereArray[i];
         }
         String upperOutput = outputString.toUpperCase();
@@ -269,28 +309,39 @@ String strgkey;
 
 
     public void encryptScytale(){
-        System.out.println("scaytale");
 
-        String noSpaceW = encryptWord.replaceAll(" ", "");
+
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
         /*
          * I used code from vertex-academy.com
          * URL: https://vertex-academy.com/tutorials/en/rounding-numbers-java/
          * I used this code to find the width of the multidimensional array that will store the message.
          */
         double decimalW = (double)(noSpaceW.length() / (double)(key));
-        System.out.println(decimalW);
+
         int width = (int)Math.ceil(decimalW);
-        System.out.println(width);
+
         int i = 0;
         char[][] scaytaleArray = new char[key][width]; //new array with a height of the key
-        
+
         //establish the extra character positions:
-        int extraChars = noSpaceW.length() - (noSpaceW.length() % key);
-        
-        for(int i = key; i <= extraChars; i--){
+        int extraChars = key - (noSpaceW.length() % key);
+
+
+        for(int z = 0; z < key; z++){
             if(extraChars > 0){
-                scaytaleArray[i][width] = '@'; 
-            }
+                scaytaleArray[key - z - 1][width - 1] = '@';
+            }else break;
+            extraChars--;
         }
 
         for(int y = 0; y < key; y++){//goes through height of array
@@ -305,34 +356,44 @@ String strgkey;
         String outputString = "";
         for(int x = 0; x < width; x++){//through each column
             for(int y = 0; y < key; y++){//through each row
-                outputString += scaytaleArray[y][x];
+                if(scaytaleArray[y][x] != '@') {
+                    outputString += scaytaleArray[y][x];
+                }
             }
             String upperOutput = outputString.toUpperCase();
-            //output.setText(outputString);
-            output.setText("message: " + upperOutput);
+            output.setText("Message: " + upperOutput);
         }
 
     }
 
     public void decryptScytale() {
-        System.out.println("scaytale");
+        String noSpaceW;
+        if(output.getText().length() > 9){
+            String outputText = output.getText().toString();
+            noSpaceW = outputText.replaceFirst("Message: ", "");
+            noSpaceW = noSpaceW.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+            System.out.println("decrypt "+noSpaceW);
+        }else {
+            noSpaceW = message.replaceAll(" ", "");
+            noSpaceW = noSpaceW.toLowerCase();
+        }
 
         /*
          * I used code from vertex-academy.com
          * URL: https://vertex-academy.com/tutorials/en/rounding-numbers-java/
          * I used this code to find the width of the multidimensional array that will store the message.
          */
-        double decimalW = (double)(decryptWord.length() / (double)(key));
+        double decimalW = (double)(noSpaceW.length() / (double)(key));
         System.out.println(decimalW);
         int width = (int)Math.ceil(decimalW);
-        System.out.println(width);
         int i = 0;
         char[][] scaytaleArray = new char[key][width]; //new array with a height of the key
 
         for(int x = 0; x < width; x++){//goes through width of array
             for(int y = 0; y < key; y++){//goes through height of array
-                if(i < decryptWord.length()) {
-                    scaytaleArray[y][x] = decryptWord.charAt(i);
+                if(i < noSpaceW.length()) {
+                    scaytaleArray[y][x] = noSpaceW.charAt(i);
                     i++;
                 } else {
                     scaytaleArray[y][x] = '@';
@@ -343,11 +404,12 @@ String strgkey;
         String outputString = "";
         for(int y = 0; y < key; y++){//through each row
             for(int x = 0; x < width; x++){//through each column
-                outputString += scaytaleArray[y][x];
+                if(scaytaleArray[y][x] != '@') {
+                    outputString += scaytaleArray[y][x];
+                }
             }
             String upperOutput = outputString.toUpperCase();
-            //output.setText(outputString);
-            output.setText("message: " + upperOutput);
+            output.setText("Message: " + upperOutput);
         }
     }
 }
